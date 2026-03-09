@@ -134,7 +134,7 @@ html, body {
 .tab-btn.active .tab-label { color: var(--accent2); }
 
 /* HOME */
-.home-header { padding: 48px 20px 18px; }
+.home-header { padding: 28px 20px 14px; }
 .home-greeting {
   font-size: 10px; font-weight: 500; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
@@ -152,7 +152,7 @@ html, body {
 
 /* API Banner */
 .api-banner {
-  margin: 0 16px 14px;
+  margin: 0 16px 10px;
   background: rgba(251,191,36,0.05);
   border: 1px solid rgba(251,191,36,0.16);
   border-radius: 12px; padding: 11px 14px;
@@ -168,9 +168,9 @@ html, body {
 
 /* Quick prompt */
 .quick-prompt {
-  margin: 0 16px 20px;
+  margin: 0 16px 14px;
   background: var(--bg2); border: 1px solid var(--border2);
-  border-radius: 13px; padding: 12px 14px;
+  border-radius: 13px; padding: 11px 14px;
   display: flex; align-items: center; gap: 10px; cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -181,19 +181,19 @@ html, body {
 .sec-label {
   font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--muted);
-  padding: 0 20px; margin-bottom: 10px; font-family: var(--mono);
+  padding: 0 20px; margin-bottom: 8px; font-family: var(--mono);
 }
 
 /* SHORTCUTS */
 .shortcuts-grid {
   display: grid; grid-template-columns: repeat(2,1fr);
-  gap: 10px; padding: 0 16px; margin-bottom: 22px;
+  gap: 8px; padding: 0 16px; margin-bottom: 16px;
 }
 
 .sc {
   background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 16px; padding: 20px 18px;
-  cursor: pointer; display: flex; flex-direction: column; gap: 16px;
+  border-radius: 14px; padding: 14px 14px;
+  cursor: pointer; display: flex; flex-direction: column; gap: 10px;
   transition: border-color 0.15s, background 0.15s, transform 0.1s;
   position: relative; overflow: hidden;
 }
@@ -214,7 +214,7 @@ html, body {
 .sc:active::after { opacity: 1; }
 
 .sc-icon {
-  width: 40px; height: 40px; border-radius: 11px;
+  width: 36px; height: 36px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
 }
 .sc-purple .sc-icon { background: rgba(139,92,246,0.15); }
@@ -224,7 +224,7 @@ html, body {
 .sc-rose .sc-icon   { background: rgba(248,113,113,0.1); }
 .sc-sky .sc-icon    { background: rgba(125,211,252,0.1); }
 
-.sc-label { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.sc-label { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3; }
 
 /* Recents */
 .recents-wrap {
@@ -542,7 +542,7 @@ html, body {
 .status-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
 </style>
 </head>
-<body>
+<body class="light">
 <div id="app">
 
   <!-- HOME -->
@@ -724,7 +724,7 @@ html, body {
         <div class="card-row">
           <div class="row-dot" style="background:var(--accent3); box-shadow:0 0 6px rgba(196,181,253,0.4);"></div>
           <div style="flex:1;"><div class="row-title">Light Mode</div></div>
-          <div class="toggle off" id="lightmode-toggle" onclick="toggleLightMode(this)"><div class="toggle-knob"></div></div>
+          <div class="toggle on" id="lightmode-toggle" onclick="toggleLightMode(this)"><div class="toggle-knob"></div></div>
         </div>
       </div>
 
