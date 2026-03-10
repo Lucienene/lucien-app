@@ -130,30 +130,62 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--t);o
 </div>
 
 <div id="chat-screen" class="sc">
-  <div class="ch"><div class="ct" id="ctitle">Chat</div><div class="cm" id="cmodel">–</div></div>
-  <div class="pr">
-    <button class="pi active" onclick="setMode('chat',this)">Chat</button>
-    <button class="pi inactive" onclick="setMode('email',this)">E-Mail</button>
-    <button class="pi inactive" onclick="setMode('calendar',this)">Termin</button>
-    <button class="pi inactive" onclick="setMode('note',this)">Notiz</button>
-    <button class="pi inactive" onclick="setMode('file',this)">Datei</button>
-    <button class="pi inactive" onclick="setMode('photo',this)">Foto</button>
-    <button class="pi inactive" onclick="setMode('message',this)">Nachricht</button>
-  </div>
-  <div id="msgs">
-    <div class="es" id="es">
-      <div class="eg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-      <div class="et">Wie kann ich helfen?</div>
-      <div class="eb">Schreib etwas oder wähl einen Modus.</div>
+
+  <!-- CHAT LIST VIEW -->
+  <div id="chat-list-view" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+    <div class="ch" style="flex-direction:row;justify-content:space-between;align-items:center;padding:14px 16px">
+      <div>
+        <div class="ct">Chats</div>
+        <div class="cm" id="cmodel">–</div>
+      </div>
+      <button onclick="newChat()" style="display:flex;align-items:center;gap:6px;background:var(--a);border:none;border-radius:10px;padding:7px 13px;cursor:pointer;color:#fff;font-size:13px;font-weight:700;font-family:var(--f);box-shadow:0 2px 12px rgba(139,92,246,.35)">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        Neu
+      </button>
+    </div>
+    <div class="sv" id="chat-list-scroll" style="padding-bottom:8px">
+      <div id="chat-list-items"></div>
     </div>
   </div>
-  <div class="su" id="sugg"></div>
-  <div class="ia">
-    <div class="ir">
-      <button class="ib iat" onclick="trigFile()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mu)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.41 17.41a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
-      <textarea id="ci" placeholder="Nachricht…" rows="1" oninput="ar(this)" onkeydown="hk(event)"></textarea>
-      <button class="ib ig" id="mic" onclick="toggleMic()"><svg id="mico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--mu)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/></svg></button>
-      <button class="ib is" id="send" onclick="send()"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 12V2M7 2L3 6M7 2L11 6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+  <!-- ACTIVE CHAT VIEW -->
+  <div id="chat-active-view" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="ch" style="flex-direction:row;align-items:center;gap:10px;padding:12px 16px">
+      <button onclick="backToList()" class="ib ig" style="flex-shrink:0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div style="flex:1;min-width:0">
+        <div class="ct" id="ctitle" style="text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Neuer Chat</div>
+        <div class="cm" id="csubtitle" style="text-align:left">Chat</div>
+      </div>
+      <button onclick="deleteCurrentChat()" class="ib ig" style="flex-shrink:0">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--re)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </button>
+    </div>
+    <div class="pr">
+      <button class="pi active" onclick="setMode('chat',this)">Chat</button>
+      <button class="pi inactive" onclick="setMode('email',this)">E-Mail</button>
+      <button class="pi inactive" onclick="setMode('calendar',this)">Termin</button>
+      <button class="pi inactive" onclick="setMode('note',this)">Notiz</button>
+      <button class="pi inactive" onclick="setMode('file',this)">Datei</button>
+      <button class="pi inactive" onclick="setMode('photo',this)">Foto</button>
+      <button class="pi inactive" onclick="setMode('message',this)">Nachricht</button>
+    </div>
+    <div id="msgs" style="flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none">
+      <div class="es" id="es">
+        <div class="eg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="et">Wie kann ich helfen?</div>
+        <div class="eb">Schreib etwas oder wähl einen Modus.</div>
+      </div>
+    </div>
+    <div class="su" id="sugg"></div>
+    <div class="ia">
+      <div class="ir">
+        <button class="ib iat" onclick="trigFile()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--mu)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.41 17.41a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+        <textarea id="ci" placeholder="Nachricht…" rows="1" oninput="ar(this)" onkeydown="hk(event)"></textarea>
+        <button class="ib ig" id="mic" onclick="toggleMic()"><svg id="mico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--mu)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="9" y1="22" x2="15" y2="22"/></svg></button>
+        <button class="ib is" id="send" onclick="send()"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 12V2M7 2L3 6M7 2L11 6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
     </div>
   </div>
   <input type="file" id="fi" accept="*/*" onchange="onFile(event)">
@@ -248,13 +280,12 @@ html,body{height:100%;background:var(--bg);font-family:var(--f);color:var(--t);o
 // ── Provider config ────────────────────────────────────────────────────────
 const PROVIDERS = {
   anthropic: {
-    name: 'Anthropic',
-    color: '#c96442',
+    name: 'Anthropic', color: '#c96442',
     detect: k => k.startsWith('sk-ant-'),
     models: [
-      {id:'claude-haiku-4-5',   label:'Claude Haiku 4.5',   desc:'Schnell & günstig · $0.25/1M',  color:'#7dd3fc'},
-      {id:'claude-sonnet-4-6',  label:'Claude Sonnet 4.6',  desc:'Ausgewogen · $3/1M',             color:'#a78bfa', def:true},
-      {id:'claude-opus-4-6',    label:'Claude Opus 4.6',    desc:'Stärkste KI · $15/1M',           color:'#c4b5fd'},
+      {id:'claude-haiku-4-5',  label:'Claude Haiku 4.5',  desc:'Schnell & günstig · $0.25/1M', color:'#7dd3fc'},
+      {id:'claude-sonnet-4-6', label:'Claude Sonnet 4.6', desc:'Ausgewogen · $3/1M',            color:'#a78bfa', def:true},
+      {id:'claude-opus-4-6',   label:'Claude Opus 4.6',   desc:'Stärkste KI · $15/1M',          color:'#c4b5fd'},
     ],
     call: async (key, model, msgs, sys) => {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
@@ -268,20 +299,23 @@ const PROVIDERS = {
     }
   },
   groq: {
-    name: 'Groq',
-    color: '#f55036',
+    name: 'Groq', color: '#f55036',
     detect: k => k.startsWith('gsk_'),
     models: [
-      {id:'llama-3.3-70b-versatile', label:'Llama 3.3 70B',      desc:'Kostenlos · sehr gut',         color:'#34d399', def:true},
-      {id:'llama-3.1-8b-instant',    label:'Llama 3.1 8B',       desc:'Kostenlos · blitzschnell',     color:'#7dd3fc'},
-      {id:'mixtral-8x7b-32768',      label:'Mixtral 8x7B',       desc:'Kostenlos · großes Kontextfenster', color:'#a78bfa'},
-      {id:'gemma2-9b-it',            label:'Gemma 2 9B',         desc:'Kostenlos · von Google',       color:'#fbbf24'},
+      {id:'llama-3.3-70b-versatile', label:'Llama 3.3 70B',   desc:'Kostenlos · sehr gut',              color:'#34d399', def:true},
+      {id:'llama-3.1-8b-instant',    label:'Llama 3.1 8B',    desc:'Kostenlos · blitzschnell',          color:'#7dd3fc'},
+      {id:'mixtral-8x7b-32768',      label:'Mixtral 8x7B',    desc:'Kostenlos · großes Kontextfenster', color:'#a78bfa'},
+      {id:'gemma2-9b-it',            label:'Gemma 2 9B',      desc:'Kostenlos · von Google',            color:'#fbbf24'},
     ],
     call: async (key, model, msgs, sys) => {
+      const mapped = msgs.map(m => ({
+        role: m.role,
+        content: typeof m.content === 'string' ? m.content : (m.content.find(c=>c.type==='text')?.text||'')
+      }));
       const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-        body: JSON.stringify({model, max_tokens:1500, messages:[{role:'system',content:sys},...msgs.map(m=>({role:m.role,content:typeof m.content==='string'?m.content:m.content.find(c=>c.type==='text')?.text||''}))]})
+        body: JSON.stringify({model, max_tokens:1500, messages:[{role:'system',content:sys},...mapped]})
       });
       const d = await r.json();
       if(d.error) throw new Error(d.error.message);
@@ -289,42 +323,45 @@ const PROVIDERS = {
     }
   },
   google: {
-    name: 'Google',
-    color: '#4285f4',
+    name: 'Google', color: '#4285f4',
     detect: k => k.startsWith('AIza'),
     models: [
-      {id:'gemini-1.5-flash',   label:'Gemini 1.5 Flash', desc:'Kostenlos · schnell',           color:'#34d399', def:true},
-      {id:'gemini-1.5-pro',     label:'Gemini 1.5 Pro',   desc:'Kostenlos · leistungsstark',    color:'#4285f4'},
-      {id:'gemini-2.0-flash',   label:'Gemini 2.0 Flash', desc:'Kostenlos · neuestes Modell',   color:'#a78bfa'},
+      {id:'gemini-1.5-flash', label:'Gemini 1.5 Flash', desc:'Kostenlos · schnell',          color:'#34d399', def:true},
+      {id:'gemini-1.5-pro',   label:'Gemini 1.5 Pro',   desc:'Kostenlos · leistungsstark',   color:'#4285f4'},
+      {id:'gemini-2.0-flash', label:'Gemini 2.0 Flash', desc:'Kostenlos · neuestes Modell',  color:'#a78bfa'},
     ],
     call: async (key, model, msgs, sys) => {
-      const contents = msgs.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:typeof m.content==='string'?m.content:m.content.find(c=>c.type==='text')?.text||''}]}));
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+      const contents = msgs.map(m => ({
+        role: m.role==='assistant'?'model':'user',
+        parts:[{text: typeof m.content==='string' ? m.content : (m.content.find(c=>c.type==='text')?.text||'')}]
+      }));
+      const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({systemInstruction:{parts:[{text:sys}]},contents})
       });
       const d = await r.json();
       if(d.error) throw new Error(d.error.message);
-      const text = d.candidates?.[0]?.content?.parts?.[0]?.text||'';
-      const tokens = (d.usageMetadata?.promptTokenCount||0)+(d.usageMetadata?.candidatesTokenCount||0);
-      return {text, tokens};
+      return {text: d.candidates?.[0]?.content?.parts?.[0]?.text||'', tokens:(d.usageMetadata?.promptTokenCount||0)+(d.usageMetadata?.candidatesTokenCount||0)};
     }
   },
   openai: {
-    name: 'OpenAI',
-    color: '#10a37f',
+    name: 'OpenAI', color: '#10a37f',
     detect: k => k.startsWith('sk-') && !k.startsWith('sk-ant-'),
     models: [
-      {id:'gpt-4o-mini', label:'GPT-4o Mini', desc:'Günstig · schnell',         color:'#34d399', def:true},
-      {id:'gpt-4o',      label:'GPT-4o',      desc:'Leistungsstark',             color:'#10a37f'},
-      {id:'gpt-4-turbo', label:'GPT-4 Turbo', desc:'Großes Kontextfenster',     color:'#a78bfa'},
+      {id:'gpt-4o-mini', label:'GPT-4o Mini', desc:'Günstig · schnell',           color:'#34d399', def:true},
+      {id:'gpt-4o',      label:'GPT-4o',      desc:'Leistungsstark',              color:'#10a37f'},
+      {id:'gpt-4-turbo', label:'GPT-4 Turbo', desc:'Großes Kontextfenster',      color:'#a78bfa'},
     ],
     call: async (key, model, msgs, sys) => {
+      const mapped = msgs.map(m => ({
+        role: m.role,
+        content: typeof m.content === 'string' ? m.content : (m.content.find(c=>c.type==='text')?.text||'')
+      }));
       const r = await fetch('https://api.openai.com/v1/chat/completions', {
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-        body: JSON.stringify({model, max_tokens:1500, messages:[{role:'system',content:sys},...msgs.map(m=>({role:m.role,content:typeof m.content==='string'?m.content:m.content.find(c=>c.type==='text')?.text||''}))]})
+        body: JSON.stringify({model, max_tokens:1500, messages:[{role:'system',content:sys},...mapped]})
       });
       const d = await r.json();
       if(d.error) throw new Error(d.error.message);
@@ -333,27 +370,30 @@ const PROVIDERS = {
   }
 };
 
-function detectProviderFromKey(k){
+function detectProviderFromKey(k) {
   for(const [id,p] of Object.entries(PROVIDERS)) if(p.detect(k)) return id;
   return null;
 }
 
 // ── State ──────────────────────────────────────────────────────────────────
-let key=sessionStorage.getItem('lc_k')||'';
-let provider=sessionStorage.getItem('lc_pv')||null;
-let model=sessionStorage.getItem('lc_m')||'';
-let hist=[],mode='chat',afile=null,afcont=null,tok=0,busy=false;
-let recents=JSON.parse(sessionStorage.getItem('lc_r')||'[]');
+let key      = sessionStorage.getItem('lc_k')  || '';
+let provider = sessionStorage.getItem('lc_pv') || null;
+let model    = sessionStorage.getItem('lc_m')  || '';
+let chats    = JSON.parse(sessionStorage.getItem('lc_chats') || '[]');
+let activeChatId = null;
+let mode = 'chat', afile = null, afcont = null, tok = 0, busy = false;
+let recents = JSON.parse(sessionStorage.getItem('lc_r') || '[]');
 
-function buildSP(mode){
-  const base=`Du bist Lucien — ein persönlicher KI-Assistent, der als eigenständige App auf dem Smartphone läuft.
+// ── System prompt ──────────────────────────────────────────────────────────
+function buildSP(mode) {
+  const base = `Du bist Lucien — ein persönlicher KI-Assistent, der als eigenständige App auf dem Smartphone läuft.
 
 DEINE IDENTITÄT:
 - Dein Name ist Lucien. Du bist kein Chatbot einer Firma, kein Grok, kein ChatGPT, kein Gemini, kein Claude.
-- Du wurdest als persönlicher Assistent für den Nutzer entwickelt und läufst als PWA (Progressive Web App) direkt auf seinem Gerät.
-- Falls du nach deiner Herkunft gefragt wirst: Du bist Lucien, ein persönlicher KI-Assistent. Mehr musst du dazu nicht sagen.
+- Du wurdest als persönlicher Assistent entwickelt und läufst als PWA direkt auf dem Gerät des Nutzers.
+- Falls du nach deiner Herkunft gefragt wirst: Du bist Lucien, ein persönlicher KI-Assistent. Mehr musst du nicht sagen.
 
-DEINE FÄHIGKEITEN (das kannst du):
+DEINE FÄHIGKEITEN:
 - Allgemeine Fragen beantworten und Themen erklären
 - Texte schreiben, überarbeiten und verbessern
 - E-Mails und Nachrichten verfassen
@@ -361,189 +401,486 @@ DEINE FÄHIGKEITEN (das kannst du):
 - Notizen strukturieren
 - Dateien und Bilder analysieren (wenn angehängt)
 - Auf Deutsch und Englisch kommunizieren
-- Kreativ helfen: Ideen entwickeln, Brainstorming, Geschichten schreiben
+- Kreativ helfen: Ideen, Brainstorming, Geschichten
 
-WAS DU NICHT KANNST (sei ehrlich wenn gefragt):
-- Du hast keinen Internetzugang und kein aktuelles Wissen nach deinem Trainingsschnitt
-- Du kannst keine Dateien speichern, keine E-Mails wirklich versenden, keine Kalendereinträge erstellen
-- Du kannst keine Bilder generieren
+WAS DU NICHT KANNST:
+- Kein Internetzugang, kein aktuelles Wissen nach Trainingsschnitt
+- Keine Dateien speichern, keine E-Mails wirklich versenden, keine Kalendereinträge erstellen
+- Keine Bilder generieren
 
 STIL:
-- Antworte immer auf Deutsch, außer der Nutzer schreibt auf Englisch
+- Antworte immer auf Deutsch, außer der Nutzer schreibt Englisch
 - Duze den Nutzer, sei freundlich, direkt und kompetent
-- Keine langen Einleitungen — komm schnell zum Punkt
-- Nutze Formatierung (fett, Aufzählungen) nur wenn es wirklich hilft`;
+- Keine langen Einleitungen — komm schnell zum Punkt`;
 
-  const extras={
-    email:`\n\nMODUS E-MAIL: Hilf dem Nutzer eine E-Mail zu schreiben. Frag kurz nach: An wen? Was ist der Inhalt? Welcher Ton (formell/locker)? Dann schreib die fertige E-Mail inklusive Betreff. Biete danach an sie anzupassen.`,
-    calendar:`\n\nMODUS TERMIN: Hilf dem Nutzer einen Termin zu planen oder zusammenzufassen. Frag nach: Datum/Uhrzeit? Dauer? Ort? Mit wem? Dann erstell eine klare, strukturierte Terminübersicht.`,
-    note:`\n\nMODUS NOTIZ: Hilf dem Nutzer Notizen zu erstellen oder zu strukturieren. Formatiere gut, nutze Überschriften und Listen wo sinnvoll. Frag nach was notiert werden soll falls unklar.`,
-    file:`\n\nMODUS DATEI: Der Nutzer hat eine Datei angehängt. Analysiere den Inhalt gründlich, fass die wichtigsten Punkte zusammen und beantworte Fragen dazu. Weise auf auffällige oder wichtige Stellen hin.`,
-    photo:`\n\nMODUS FOTO: Der Nutzer hat ein Bild angehängt. Beschreibe was du siehst, extrahiere Text wenn vorhanden, beantworte Fragen zum Bild. Sei präzise und detailliert.`,
-    message:`\n\nMODUS NACHRICHT: Hilf dem Nutzer eine kurze Nachricht (WhatsApp, SMS etc.) zu schreiben. Frag nach: An wen? Was soll rüber kommen? Ton? Dann schreib die fertige Nachricht, kurz und passend.`
+  const extras = {
+    email:    '\n\nMODUS E-MAIL: Hilf dem Nutzer eine E-Mail zu schreiben. Frag kurz nach: An wen? Was ist der Inhalt? Welcher Ton? Dann schreib die fertige E-Mail inklusive Betreff.',
+    calendar: '\n\nMODUS TERMIN: Hilf dem Nutzer einen Termin zu planen. Frag nach: Datum/Uhrzeit? Dauer? Ort? Mit wem? Dann erstell eine klare Terminübersicht.',
+    note:     '\n\nMODUS NOTIZ: Hilf dem Nutzer Notizen zu erstellen oder zu strukturieren. Formatiere gut, nutze Überschriften und Listen wo sinnvoll.',
+    file:     '\n\nMODUS DATEI: Der Nutzer hat eine Datei angehängt. Analysiere den Inhalt gründlich, fass die wichtigsten Punkte zusammen.',
+    photo:    '\n\nMODUS FOTO: Der Nutzer hat ein Bild angehängt. Beschreibe was du siehst, extrahiere Text wenn vorhanden, beantworte Fragen zum Bild.',
+    message:  '\n\nMODUS NACHRICHT: Hilf dem Nutzer eine kurze Nachricht zu schreiben. Frag nach: An wen? Was soll rüber kommen? Ton? Dann schreib die fertige Nachricht.'
   };
-  return base+(extras[mode]||'');
+  return base + (extras[mode] || '');
 }
-const SP={};['chat','email','calendar','note','file','photo','message'].forEach(m=>Object.defineProperty(SP,m,{get:()=>buildSP(m)}));
-const SG={chat:['Was kannst du alles?','Hilf mir beim Schreiben','Erkläre etwas'],email:['E-Mail an Chef','Freundliche Absage','Terminanfrage'],calendar:['Termin morgen 14 Uhr','Wochenplanung','Meeting planen'],note:['Einkaufsliste','Ideen festhalten','Meeting-Notizen'],file:['Zusammenfassen','Hauptpunkte','Fehler suchen'],photo:['Bild beschreiben','Text extrahieren','Was ist das?'],message:['Geburtstagsnachricht','Absage schreiben','Dankesnachricht']};
-const MT={chat:'Chat',email:'E-Mail',calendar:'Termin',note:'Notiz',file:'Datei',photo:'Foto',message:'Nachricht'};
-const MC={chat:'#8b5cf6',email:'#34d399',calendar:'#fbbf24',note:'#c4b5fd',file:'#a78bfa',photo:'#f87171',message:'#7dd3fc'};
+
+// ── Chat session helpers ───────────────────────────────────────────────────
+function getChat(id) { return chats.find(c => c.id === id); }
+function saveChats() { sessionStorage.setItem('lc_chats', JSON.stringify(chats)); }
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+function newChat(startMode) {
+  const id = genId();
+  const m = startMode || 'chat';
+  chats.unshift({id, title:'Neuer Chat', mode:m, msgs:[], created:Date.now()});
+  saveChats();
+  openChat(id);
+  if(startMode) setModeById(m);
+}
+
+function openChat(id) {
+  activeChatId = id;
+  const c = getChat(id);
+  if(!c) return;
+
+  const msgsEl = document.getElementById('msgs');
+  msgsEl.innerHTML = '';
+
+  if(!c.msgs.length) {
+    msgsEl.innerHTML = '<div class="es" id="es"><div class="eg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="et">Wie kann ich helfen?</div><div class="eb">Schreib etwas oder wähl einen Modus.</div></div>';
+  } else {
+    c.msgs.forEach(m => {
+      if(m.role === 'user' || m.role === 'assistant') {
+        const d = document.createElement('div');
+        d.className = 'msg ' + (m.role === 'user' ? 'mu2' : 'mc');
+        const text = typeof m.content === 'string' ? m.content : (Array.isArray(m.content) ? (m.content.find(x=>x.type==='text')?.text || '[Datei]') : '');
+        d.innerHTML = esc(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+        msgsEl.appendChild(d);
+      }
+    });
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
+
+  mode = c.mode || 'chat';
+  document.querySelectorAll('.pi').forEach(p => {
+    const match = p.textContent.trim() === MT[mode];
+    p.classList.toggle('active', match);
+    p.classList.toggle('inactive', !match);
+  });
+  document.getElementById('ctitle').textContent = c.title;
+  document.getElementById('csubtitle').textContent = MT[mode] || '';
+  showSugg(mode);
+
+  document.getElementById('chat-list-view').style.display = 'none';
+  document.getElementById('chat-active-view').style.display = 'flex';
+  setTimeout(() => document.getElementById('ci').focus(), 80);
+}
+
+function backToList() {
+  activeChatId = null;
+  document.getElementById('chat-active-view').style.display = 'none';
+  document.getElementById('chat-list-view').style.display = 'flex';
+  rendChatList();
+}
+
+function deleteCurrentChat() {
+  if(!activeChatId) return;
+  if(!confirm('Chat löschen?')) return;
+  chats = chats.filter(c => c.id !== activeChatId);
+  saveChats();
+  backToList();
+  toast('Chat gelöscht');
+}
+
+function deleteChatById(id, e) {
+  e.stopPropagation();
+  if(!confirm('Chat löschen?')) return;
+  chats = chats.filter(c => c.id !== id);
+  saveChats();
+  rendChatList();
+  toast('Chat gelöscht');
+}
+
+function rendChatList() {
+  const el = document.getElementById('chat-list-items');
+  if(!chats.length) {
+    el.innerHTML = '<div style="padding:40px 20px;text-align:center"><div style="font-size:32px;margin-bottom:12px">&#x1F4AC;</div><div style="font-size:15px;font-weight:700;color:var(--t2);margin-bottom:6px">Noch keine Chats</div><div style="font-size:13px;color:var(--mu)">Tippe auf &bdquo;Neu&ldquo; um loszulegen</div></div>';
+    return;
+  }
+
+  let html = '<div style="padding:12px 16px 6px"><div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);font-family:var(--m)">' + chats.length + ' Gespräch' + (chats.length !== 1 ? 'e' : '') + '</div></div>';
+
+  chats.forEach(function(c) {
+    let preview = 'Noch keine Nachrichten';
+    if(c.msgs.length) {
+      const last = c.msgs[c.msgs.length - 1];
+      if(typeof last.content === 'string') preview = last.content;
+      else if(Array.isArray(last.content)) preview = last.content.find(x=>x.type==='text')?.text || '[Datei]';
+      if(preview.length > 60) preview = preview.substring(0, 60) + '…';
+    }
+    const d = new Date(c.created);
+    const dateStr = d.toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit'});
+    const modeColor = MC[c.mode] || '#8b5cf6';
+    const msgCount = c.msgs.length;
+    const modeLabel = MT[c.mode] || 'Chat';
+
+    html += '<div style="margin:0 16px 8px;background:var(--bg2);border:1px solid var(--bd);border-radius:14px;overflow:hidden;cursor:pointer" onclick="openChat(\'' + c.id + '\')">';
+    html += '<div style="padding:13px 14px;display:flex;align-items:center;gap:12px">';
+    html += '<div style="width:38px;height:38px;border-radius:11px;background:' + modeColor + '22;display:flex;align-items:center;justify-content:center;flex-shrink:0">';
+    html += '<div style="width:8px;height:8px;border-radius:50%;background:' + modeColor + '"></div></div>';
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="font-size:14px;font-weight:700;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(c.title) + '</div>';
+    html += '<div style="font-size:12px;color:var(--mu);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--m)">' + esc(preview) + '</div></div>';
+    html += '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">';
+    html += '<span style="font-size:10px;color:var(--mu);font-family:var(--m)">' + dateStr + '</span>';
+    html += '<button onclick="deleteChatById(\'' + c.id + '\',event)" style="background:none;border:none;cursor:pointer;padding:2px;opacity:.5"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--re)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>';
+    html += '</div></div>';
+    if(msgCount) {
+      html += '<div style="padding:0 14px 10px;display:flex;align-items:center;gap:6px">';
+      html += '<span style="font-size:10px;color:var(--mu);font-family:var(--m)">' + msgCount + ' Nachricht' + (msgCount !== 1 ? 'en' : '') + '</span>';
+      html += '<span style="font-size:10px;color:var(--mu)">·</span>';
+      html += '<span style="font-size:10px;color:var(--mu);font-family:var(--m)">' + modeLabel + '</span></div>';
+    }
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+}
 
 // ── Init ───────────────────────────────────────────────────────────────────
-window.addEventListener('load',()=>{
-  if(key && !provider){provider=detectProviderFromKey(key)||'anthropic'}
-  if(key && provider && !model){model=PROVIDERS[provider]?.models.find(m=>m.def)?.id||PROVIDERS[provider]?.models[0]?.id||''}
-  updApi();rendRec();showSugg('chat');tab('home');
+window.addEventListener('load', () => {
+  if(key && !provider) provider = detectProviderFromKey(key) || 'anthropic';
+  if(key && provider && !model) model = PROVIDERS[provider]?.models.find(m=>m.def)?.id || PROVIDERS[provider]?.models[0]?.id || '';
+  updApi(); rendRec(); rendChatList(); showSugg('chat'); tab('home');
   updModelLabel();
-  const sa=window.navigator.standalone||window.matchMedia('(display-mode:standalone)').matches;
-  if(!sa&&!localStorage.getItem('lc_id'))setTimeout(()=>document.getElementById('instm').classList.add('show'),900);
+  const sa = window.navigator.standalone || window.matchMedia('(display-mode:standalone)').matches;
+  if(!sa && !localStorage.getItem('lc_id')) setTimeout(() => document.getElementById('instm').classList.add('show'), 900);
 });
 
-// ── Provider detection (live while typing) ─────────────────────────────────
-function detectProvider(val){
-  const pid=detectProviderFromKey(val.trim());
-  const badge=document.getElementById('pvbadge');
-  if(pid){
-    const p=PROVIDERS[pid];
-    document.getElementById('pvdot').style.background=p.color;
-    document.getElementById('pvdot').style.boxShadow=`0 0 6px ${p.color}88`;
-    document.getElementById('pvname').textContent=p.name+' erkannt';
-    badge.style.display='inline-flex';
+// ── Provider detection ─────────────────────────────────────────────────────
+function detectProvider(val) {
+  const pid = detectProviderFromKey(val.trim());
+  const badge = document.getElementById('pvbadge');
+  if(pid) {
+    const p = PROVIDERS[pid];
+    document.getElementById('pvdot').style.background = p.color;
+    document.getElementById('pvdot').style.boxShadow = '0 0 6px ' + p.color + '88';
+    document.getElementById('pvname').textContent = p.name + ' erkannt';
+    badge.style.display = 'inline-flex';
   } else {
-    badge.style.display='none';
+    badge.style.display = 'none';
   }
 }
 
 // ── Tab / navigation ───────────────────────────────────────────────────────
-function tab(t){document.querySelectorAll('.sc').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tb').forEach(b=>{b.classList.remove('active');b.querySelector('.tl').style.color='';b.querySelectorAll('svg').forEach(s=>s.setAttribute('stroke','var(--mu)'))});document.getElementById(t+'-screen').classList.add('active');const b=document.getElementById('tab-'+t);if(b){b.classList.add('active');b.querySelector('.tl').style.color='var(--a2)';b.querySelectorAll('svg').forEach(s=>s.setAttribute('stroke','var(--a2)'))}}
-function goChat(){tab('chat');setTimeout(()=>document.getElementById('ci').focus(),80)}
-function go(m){tab('chat');mode=m;document.querySelectorAll('.pi').forEach(p=>{const match=p.textContent.trim()===MT[m];p.classList.toggle('active',match);p.classList.toggle('inactive',!match)});document.getElementById('ctitle').textContent=MT[m];showSugg(m);setTimeout(()=>document.getElementById('ci').focus(),80)}
-function setMode(m,b){mode=m;document.querySelectorAll('.pi').forEach(p=>{p.classList.remove('active');p.classList.add('inactive')});b.classList.add('active');b.classList.remove('inactive');document.getElementById('ctitle').textContent=MT[m];showSugg(m)}
-function showSugg(m){document.getElementById('sugg').innerHTML=(SG[m]||[]).map(s=>`<div class="cp" onclick="useSugg('${s}')">${s}</div>`).join('')}
-function useSugg(t){document.getElementById('ci').value=t;document.getElementById('sugg').innerHTML='';send()}
+function tab(t) {
+  document.querySelectorAll('.sc').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b => {
+    b.classList.remove('active');
+    b.querySelector('.tl').style.color = '';
+    b.querySelectorAll('svg').forEach(s => s.setAttribute('stroke','var(--mu)'));
+  });
+  document.getElementById(t + '-screen').classList.add('active');
+  const b = document.getElementById('tab-' + t);
+  if(b) {
+    b.classList.add('active');
+    b.querySelector('.tl').style.color = 'var(--a2)';
+    b.querySelectorAll('svg').forEach(s => s.setAttribute('stroke','var(--a2)'));
+  }
+  if(t === 'chat') {
+    rendChatList();
+    document.getElementById('chat-list-view').style.display = 'flex';
+    document.getElementById('chat-active-view').style.display = 'none';
+    activeChatId = null;
+  }
+}
+
+function goChat() { tab('chat'); }
+function go(m) { tab('chat'); newChat(m); }
+
+function setMode(m, b) {
+  mode = m;
+  document.querySelectorAll('.pi').forEach(p => { p.classList.remove('active'); p.classList.add('inactive'); });
+  b.classList.add('active'); b.classList.remove('inactive');
+  document.getElementById('csubtitle').textContent = MT[m] || '';
+  if(activeChatId) { const c = getChat(activeChatId); if(c) { c.mode = m; saveChats(); } }
+  showSugg(m);
+}
+
+function setModeById(m) {
+  const btn = document.querySelector('.pi[onclick*="' + m + '"]');
+  if(btn) setMode(m, btn);
+}
+
+// ── Suggestions ────────────────────────────────────────────────────────────
+const SG = {
+  chat:     ['Was kannst du alles?','Hilf mir beim Schreiben','Erkläre etwas'],
+  email:    ['E-Mail an Chef','Freundliche Absage','Terminanfrage'],
+  calendar: ['Termin morgen 14 Uhr','Wochenplanung','Meeting planen'],
+  note:     ['Einkaufsliste','Ideen festhalten','Meeting-Notizen'],
+  file:     ['Zusammenfassen','Hauptpunkte','Fehler suchen'],
+  photo:    ['Bild beschreiben','Text extrahieren','Was ist das?'],
+  message:  ['Geburtstagsnachricht','Absage schreiben','Dankesnachricht']
+};
+const MT = {chat:'Chat',email:'E-Mail',calendar:'Termin',note:'Notiz',file:'Datei',photo:'Foto',message:'Nachricht'};
+const MC = {chat:'#8b5cf6',email:'#34d399',calendar:'#fbbf24',note:'#c4b5fd',file:'#a78bfa',photo:'#f87171',message:'#7dd3fc'};
+
+function showSugg(m) {
+  document.getElementById('sugg').innerHTML = (SG[m]||[]).map(s => '<div class="cp" onclick="useSugg(\'' + s + '\')">' + s + '</div>').join('');
+}
+function useSugg(t) { document.getElementById('ci').value = t; document.getElementById('sugg').innerHTML = ''; send(); }
 
 // ── Speech ─────────────────────────────────────────────────────────────────
-let rec=null,lis=false;
-function initSpeech(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return null;const r=new SR();r.lang='de-DE';r.continuous=false;r.interimResults=true;r.onresult=e=>{let f='',i='';for(let x=e.resultIndex;x<e.results.length;x++){if(e.results[x].isFinal)f+=e.results[x][0].transcript;else i+=e.results[x][0].transcript}const inp=document.getElementById('ci');inp.value=f||i;ar(inp)};r.onend=()=>{lis=false;updMic(false);if(document.getElementById('ci').value.trim())send()};r.onerror=()=>{lis=false;updMic(false)};return r}
-function toggleMic(){if(lis){rec?.stop();lis=false;updMic(false);return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Spracherkennung nicht unterstützt');return}rec=initSpeech();if(!rec)return;try{rec.start();lis=true;updMic(true)}catch(e){}}
-function updMic(a){const i=document.getElementById('mico');if(i)i.setAttribute('stroke',a?'var(--re)':'var(--mu)');document.getElementById('ci').placeholder=a?'Zuhören…':'Schreib oder sprich…'}
-function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
-function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}}
+let rec = null, lis = false;
+function initSpeech() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return null;
+  const r = new SR();
+  r.lang = 'de-DE'; r.continuous = false; r.interimResults = true;
+  r.onresult = e => {
+    let f = '', i = '';
+    for(let x = e.resultIndex; x < e.results.length; x++) {
+      if(e.results[x].isFinal) f += e.results[x][0].transcript;
+      else i += e.results[x][0].transcript;
+    }
+    const inp = document.getElementById('ci');
+    inp.value = f || i; ar(inp);
+  };
+  r.onend = () => { lis = false; updMic(false); if(document.getElementById('ci').value.trim()) send(); };
+  r.onerror = () => { lis = false; updMic(false); };
+  return r;
+}
+function toggleMic() {
+  if(lis) { rec?.stop(); lis = false; updMic(false); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) { toast('Spracherkennung nicht unterstützt'); return; }
+  rec = initSpeech(); if(!rec) return;
+  try { rec.start(); lis = true; updMic(true); } catch(e) {}
+}
+function updMic(a) {
+  const i = document.getElementById('mico');
+  if(i) i.setAttribute('stroke', a ? 'var(--re)' : 'var(--mu)');
+  document.getElementById('ci').placeholder = a ? 'Zuhören…' : 'Schreib oder sprich…';
+}
+function ar(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+function hk(e) { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
 
 // ── Messages ───────────────────────────────────────────────────────────────
-function addMsg(role,content){const m=document.getElementById('msgs'),es=document.getElementById('es');if(es)es.remove();const d=document.createElement('div');if(role==='typing'){d.className='msg mt';d.id='typ';d.innerHTML='<div class="td"><span></span><span></span><span></span></div>'}else if(role==='system'){d.className='msg ms';d.textContent=content}else{d.className=`msg ${role==='user'?'mu2':'mc'}`;d.innerHTML=esc(content).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}m.appendChild(d);m.scrollTop=m.scrollHeight;return d}
-function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function addMsg(role, content) {
+  const m = document.getElementById('msgs');
+  const es = document.getElementById('es');
+  if(es) es.remove();
+  const d = document.createElement('div');
+  if(role === 'typing') {
+    d.className = 'msg mt'; d.id = 'typ';
+    d.innerHTML = '<div class="td"><span></span><span></span><span></span></div>';
+  } else if(role === 'system') {
+    d.className = 'msg ms'; d.textContent = content;
+  } else {
+    d.className = 'msg ' + (role === 'user' ? 'mu2' : 'mc');
+    d.innerHTML = esc(content).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  }
+  m.appendChild(d); m.scrollTop = m.scrollHeight;
+  return d;
+}
+function esc(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // ── Send ───────────────────────────────────────────────────────────────────
-async function send(){
-  if(busy)return;
-  if(!key){showApi();return}
-  const inp=document.getElementById('ci'),text=inp.value.trim();
-  if(!text&&!afile)return;
-  let uc=[];
-  if(afile&&afcont){if(afile.type.startsWith('image/'))uc.push({type:'image',source:{type:'base64',media_type:afile.type,data:afcont}});else uc.push({type:'text',text:`[Datei: ${afile.name}]\n\n${afcont}`})}
-  if(text)uc.push({type:'text',text});
-  if(!uc.length)return;
-  if(afile){const p=document.createElement('div');p.className='fp';p.style.alignSelf='flex-end';p.innerHTML=`<span>${esc(afile.name)}</span>`;document.getElementById('msgs').appendChild(p)}
-  if(text)addMsg('user',text);
-  inp.value='';inp.style.height='auto';document.getElementById('sugg').innerHTML='';
-  hist.push({role:'user',content:uc.length===1&&uc[0].type==='text'?text:uc});
-  addRec(mode,text||afile?.name||'Datei');afile=null;afcont=null;
-  busy=true;document.getElementById('send').disabled=true;
-  const te=addMsg('typing','');
-  try{
-    const pv=PROVIDERS[provider];
-    if(!pv)throw new Error('Kein Anbieter konfiguriert');
-    const {text:reply,tokens}=await pv.call(key,model,hist,SP[mode]||SP.chat);
-    if(te)te.remove();
-    addMsg('claude',reply||'Keine Antwort erhalten.');
-    hist.push({role:'assistant',content:reply});
-    tok+=tokens;updUsage();
-  }catch(e){
-    if(te)te.remove();
-    addMsg('claude','Fehler: '+e.message);
-    hist.pop();
+async function send() {
+  if(busy) return;
+  if(!key) { showApi(); return; }
+  if(!activeChatId) newChat();
+  const chat = getChat(activeChatId);
+  if(!chat) return;
+
+  const inp = document.getElementById('ci'), text = inp.value.trim();
+  if(!text && !afile) return;
+
+  let uc = [];
+  if(afile && afcont) {
+    if(afile.type.startsWith('image/')) uc.push({type:'image', source:{type:'base64', media_type:afile.type, data:afcont}});
+    else uc.push({type:'text', text:'[Datei: ' + afile.name + ']\n\n' + afcont});
   }
-  busy=false;document.getElementById('send').disabled=false;document.getElementById('msgs').scrollTop=99999;
+  if(text) uc.push({type:'text', text});
+  if(!uc.length) return;
+
+  if(afile) {
+    const p = document.createElement('div');
+    p.className = 'fp'; p.style.alignSelf = 'flex-end';
+    p.innerHTML = '<span>' + esc(afile.name) + '</span>';
+    document.getElementById('msgs').appendChild(p);
+  }
+  if(text) addMsg('user', text);
+  inp.value = ''; inp.style.height = 'auto';
+  document.getElementById('sugg').innerHTML = '';
+
+  const msgObj = {role:'user', content: uc.length === 1 && uc[0].type === 'text' ? text : uc};
+  chat.msgs.push(msgObj);
+
+  if(chat.msgs.length === 1 && text) {
+    chat.title = text.length > 36 ? text.substring(0, 36) + '…' : text;
+    document.getElementById('ctitle').textContent = chat.title;
+  }
+
+  addRec(mode, text || (afile ? afile.name : 'Datei'));
+  afile = null; afcont = null;
+  saveChats();
+
+  busy = true; document.getElementById('send').disabled = true;
+  const te = addMsg('typing', '');
+  try {
+    const pv = PROVIDERS[provider];
+    if(!pv) throw new Error('Kein Anbieter konfiguriert');
+    const {text: reply, tokens} = await pv.call(key, model, chat.msgs, buildSP(mode));
+    if(te) te.remove();
+    addMsg('claude', reply || 'Keine Antwort erhalten.');
+    chat.msgs.push({role:'assistant', content: reply});
+    saveChats();
+    tok += tokens; updUsage();
+  } catch(e) {
+    if(te) te.remove();
+    addMsg('claude', 'Fehler: ' + e.message);
+    chat.msgs.pop(); saveChats();
+  }
+  busy = false; document.getElementById('send').disabled = false;
+  document.getElementById('msgs').scrollTop = 99999;
 }
 
-function trigFile(){document.getElementById('fi').click()}
-function onFile(e){const f=e.target.files[0];if(!f)return;afile=f;const r=new FileReader();if(f.type.startsWith('image/')){r.onload=ev=>{afcont=ev.target.result.split(',')[1];toast(f.name+' angehängt')};r.readAsDataURL(f)}else{r.onload=ev=>{afcont=ev.target.result;toast(f.name+' angehängt')};r.readAsText(f)}e.target.value=''}
+function trigFile() { document.getElementById('fi').click(); }
+function onFile(e) {
+  const f = e.target.files[0]; if(!f) return;
+  afile = f;
+  const r = new FileReader();
+  if(f.type.startsWith('image/')) {
+    r.onload = ev => { afcont = ev.target.result.split(',')[1]; toast(f.name + ' angehängt'); };
+    r.readAsDataURL(f);
+  } else {
+    r.onload = ev => { afcont = ev.target.result; toast(f.name + ' angehängt'); };
+    r.readAsText(f);
+  }
+  e.target.value = '';
+}
 
 // ── API modal ──────────────────────────────────────────────────────────────
-function showApi(){
-  document.getElementById('pvbadge').style.display='none';
-  const inp=document.getElementById('aki');
-  inp.value=key||'';
-  if(key)detectProvider(key);
+function showApi() {
+  document.getElementById('pvbadge').style.display = 'none';
+  const inp = document.getElementById('aki');
+  inp.value = key || '';
+  if(key) detectProvider(key);
   document.getElementById('apim').classList.add('show');
-  setTimeout(()=>inp.focus(),280);
+  setTimeout(() => inp.focus(), 280);
 }
-function hideApi(){document.getElementById('apim').classList.remove('show')}
-function saveKey(){
-  const v=document.getElementById('aki').value.trim();
-  if(!v){toast('Key darf nicht leer sein');return}
-  const pid=detectProviderFromKey(v);
-  if(!pid){toast('Unbekannter Key-Typ');return}
-  key=v;provider=pid;
-  model=PROVIDERS[pid].models.find(m=>m.def)?.id||PROVIDERS[pid].models[0]?.id;
-  sessionStorage.setItem('lc_k',key);
-  sessionStorage.setItem('lc_pv',provider);
-  sessionStorage.setItem('lc_m',model);
-  hideApi();updApi();updModelLabel();
-  toast(PROVIDERS[pid].name+' verbunden');
+function hideApi() { document.getElementById('apim').classList.remove('show'); }
+function saveKey() {
+  const v = document.getElementById('aki').value.trim();
+  if(!v) { toast('Key darf nicht leer sein'); return; }
+  const pid = detectProviderFromKey(v);
+  if(!pid) { toast('Unbekannter Key-Typ'); return; }
+  key = v; provider = pid;
+  model = PROVIDERS[pid].models.find(m=>m.def)?.id || PROVIDERS[pid].models[0]?.id;
+  sessionStorage.setItem('lc_k', key);
+  sessionStorage.setItem('lc_pv', provider);
+  sessionStorage.setItem('lc_m', model);
+  hideApi(); updApi(); updModelLabel();
+  toast(PROVIDERS[pid].name + ' verbunden');
 }
-function clearKey(){if(confirm('API Key wirklich entfernen?')){key='';provider=null;model='';sessionStorage.removeItem('lc_k');sessionStorage.removeItem('lc_pv');sessionStorage.removeItem('lc_m');updApi();updModelLabel();toast('API Key entfernt')}}
-
-function updApi(){
-  const b=document.getElementById('api-banner'),s=document.getElementById('apistat'),d=document.getElementById('apidisp'),pv=document.getElementById('pvdisp');
-  if(key&&provider){
-    const p=PROVIDERS[provider];
-    if(b)b.style.display='none';
-    s.innerHTML=`<span class="sd" style="background:${p.color};box-shadow:0 0 5px ${p.color}88"></span>${p.name} verbunden`;
-    d.textContent=key.substring(0,10)+'••••••••••••';
-    pv.textContent=p.name;
-  }else{
-    if(b)b.style.display='flex';
-    s.innerHTML=`<span class="sd" style="background:var(--or);box-shadow:0 0 5px rgba(251,191,36,.5)"></span>Kein API Key`;
-    d.textContent='Nicht gesetzt';
-    pv.textContent='–';
+function clearKey() {
+  if(confirm('API Key wirklich entfernen?')) {
+    key = ''; provider = null; model = '';
+    sessionStorage.removeItem('lc_k'); sessionStorage.removeItem('lc_pv'); sessionStorage.removeItem('lc_m');
+    updApi(); updModelLabel(); toast('API Key entfernt');
   }
 }
-function updModelLabel(){
-  const label=model||(provider?PROVIDERS[provider]?.models[0]?.id:'–');
-  document.getElementById('mdisp').textContent=label;
-  document.getElementById('cmodel').textContent=label;
+function updApi() {
+  const b = document.getElementById('api-banner'), s = document.getElementById('apistat'), d = document.getElementById('apidisp'), pv = document.getElementById('pvdisp');
+  if(key && provider) {
+    const p = PROVIDERS[provider];
+    if(b) b.style.display = 'none';
+    s.innerHTML = '<span class="sd" style="background:' + p.color + ';box-shadow:0 0 5px ' + p.color + '88"></span>' + p.name + ' verbunden';
+    d.textContent = key.substring(0,10) + '••••••••••••';
+    pv.textContent = p.name;
+  } else {
+    if(b) b.style.display = 'flex';
+    s.innerHTML = '<span class="sd" style="background:var(--or);box-shadow:0 0 5px rgba(251,191,36,.5)"></span>Kein API Key';
+    d.textContent = 'Nicht gesetzt';
+    pv.textContent = '–';
+  }
+}
+function updModelLabel() {
+  const label = model || (provider ? PROVIDERS[provider]?.models[0]?.id : '–');
+  document.getElementById('mdisp').textContent = label;
+  document.getElementById('cmodel').textContent = label;
 }
 
 // ── Model picker ───────────────────────────────────────────────────────────
-function showModel(){
-  if(!provider){toast('Zuerst API Key eingeben');return}
-  const p=PROVIDERS[provider];
-  document.getElementById('mdm-sub').textContent=`Modelle für ${p.name}`;
-  document.getElementById('model-list').innerHTML=p.models.map(m=>`
-    <div class="mo2 ${m.id===model?'active':''}" onclick="selModel('${m.id}',this)" data-model="${m.id}">
-      <div class="mdo" style="background:${m.color};box-shadow:0 0 7px ${m.color}88"></div>
-      <div style="flex:1"><div class="mn">${m.label}${m.def?` <span style="font-size:10px;background:var(--a);color:#fff;border-radius:4px;padding:1px 6px;margin-left:4px;font-family:var(--f)">Standard</span>`:''}</div><div class="md">${m.desc}</div></div>
-      <div class="mck" style="display:${m.id===model?'block':'none'}">✓</div>
-    </div>`).join('');
+function showModel() {
+  if(!provider) { toast('Zuerst API Key eingeben'); return; }
+  const p = PROVIDERS[provider];
+  document.getElementById('mdm-sub').textContent = 'Modelle für ' + p.name;
+  let html = '';
+  p.models.forEach(function(m) {
+    html += '<div class="mo2 ' + (m.id === model ? 'active' : '') + '" onclick="selModel(\'' + m.id + '\')" data-model="' + m.id + '">';
+    html += '<div class="mdo" style="background:' + m.color + ';box-shadow:0 0 7px ' + m.color + '88"></div>';
+    html += '<div style="flex:1"><div class="mn">' + m.label + (m.def ? ' <span style="font-size:10px;background:var(--a);color:#fff;border-radius:4px;padding:1px 6px;margin-left:4px;font-family:var(--f)">Standard</span>' : '') + '</div><div class="md">' + m.desc + '</div></div>';
+    html += '<div class="mck" style="display:' + (m.id === model ? 'block' : 'none') + '">&#10003;</div></div>';
+  });
+  document.getElementById('model-list').innerHTML = html;
   document.getElementById('mdm').classList.add('show');
 }
-function hideModel(){document.getElementById('mdm').classList.remove('show')}
-function selModel(m){model=m;sessionStorage.setItem('lc_m',m);hideModel();updModelLabel();toast(m+' aktiv')}
+function hideModel() { document.getElementById('mdm').classList.remove('show'); }
+function selModel(m) { model = m; sessionStorage.setItem('lc_m', m); hideModel(); updModelLabel(); toast(m + ' aktiv'); }
 
 // ── Recents / usage ────────────────────────────────────────────────────────
-function addRec(m,text){recents.unshift({title:text.length>32?text.substring(0,32)+'…':text,sub:MT[m]||'Chat',mode:m,time:'Jetzt',color:MC[m]||'#8b5cf6'});if(recents.length>5)recents=recents.slice(0,5);sessionStorage.setItem('lc_r',JSON.stringify(recents));rendRec()}
-function rendRec(){const l=document.getElementById('rl');if(!recents.length){l.innerHTML='<div class="rr" style="justify-content:center;padding:18px"><span style="font-size:11px;color:var(--mu);font-family:var(--m)">Noch keine Aktivität</span></div>';return}l.innerHTML=recents.map(i=>`<div class="rr" onclick="go('${i.mode}')"><div class="rb" style="background:${i.color}"></div><div class="ri"><div class="rn">${esc(i.title)}</div><div class="rs">${i.sub}</div></div><div class="rt">${i.time}</div><svg width="5" height="9" viewBox="0 0 6 11" fill="none" style="margin-left:6px;opacity:.2"><path d="M1 1l4 4.5L1 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`).join('')}
-function updUsage(){document.getElementById('ucost').textContent=tok.toLocaleString()+' tok';document.getElementById('utok').textContent=tok.toLocaleString()+' Tokens';document.getElementById('ufill').style.width=Math.min((tok/100000)*100,100)+'%'}
-function clearHist(){if(!confirm('Chat-Verlauf wirklich löschen?'))return;hist=[];recents=[];sessionStorage.removeItem('lc_r');rendRec();document.getElementById('msgs').innerHTML='<div class="es" id="es"><div class="eg"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="et">Wie kann ich helfen?</div><div class="eb">Schreib etwas oder wähl einen Modus.</div></div>';toast('Verlauf gelöscht')}
+function addRec(m, text) {
+  recents.unshift({title: text.length>32 ? text.substring(0,32)+'…' : text, sub: MT[m]||'Chat', mode:m, time:'Jetzt', color: MC[m]||'#8b5cf6'});
+  if(recents.length > 5) recents = recents.slice(0,5);
+  sessionStorage.setItem('lc_r', JSON.stringify(recents));
+  rendRec();
+}
+function rendRec() {
+  const l = document.getElementById('rl');
+  if(!recents.length) {
+    l.innerHTML = '<div class="rr" style="justify-content:center;padding:18px"><span style="font-size:11px;color:var(--mu);font-family:var(--m)">Noch keine Aktivität</span></div>';
+    return;
+  }
+  l.innerHTML = recents.map(i =>
+    '<div class="rr" onclick="go(\'' + i.mode + '\')">' +
+    '<div class="rb" style="background:' + i.color + '"></div>' +
+    '<div class="ri"><div class="rn">' + esc(i.title) + '</div><div class="rs">' + i.sub + '</div></div>' +
+    '<div class="rt">' + i.time + '</div>' +
+    '<svg width="5" height="9" viewBox="0 0 6 11" fill="none" style="margin-left:6px;opacity:.2"><path d="M1 1l4 4.5L1 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+  ).join('');
+}
+function updUsage() {
+  document.getElementById('ucost').textContent = tok.toLocaleString() + ' tok';
+  document.getElementById('utok').textContent = tok.toLocaleString() + ' Tokens';
+  document.getElementById('ufill').style.width = Math.min((tok/100000)*100, 100) + '%';
+}
+function clearHist() {
+  if(!confirm('Alle Chats wirklich löschen?')) return;
+  chats = []; recents = []; activeChatId = null;
+  sessionStorage.removeItem('lc_r'); sessionStorage.removeItem('lc_chats');
+  rendRec(); rendChatList();
+  document.getElementById('chat-active-view').style.display = 'none';
+  document.getElementById('chat-list-view').style.display = 'flex';
+  toast('Alle Chats gelöscht');
+}
 
 // ── Misc ───────────────────────────────────────────────────────────────────
-function toggleLight(el){el.classList.toggle('on');el.classList.toggle('off');document.body.classList.toggle('light',el.classList.contains('on'));toast(el.classList.contains('on')?'Light Mode aktiv':'Dark Mode aktiv')}
-function showTut(){document.getElementById('instm').classList.remove('show');document.getElementById('tutm').classList.add('show')}
-function dimiss(){document.getElementById('instm').classList.remove('show');document.getElementById('tutm').classList.remove('show');localStorage.setItem('lc_id','1')}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
-['apim','mdm','instm','tutm'].forEach(id=>{document.getElementById(id).addEventListener('click',function(e){if(e.target===this){id==='apim'?hideApi():id==='mdm'?hideModel():dimiss()}})});
+function toggleLight(el) {
+  el.classList.toggle('on'); el.classList.toggle('off');
+  document.body.classList.toggle('light', el.classList.contains('on'));
+  toast(el.classList.contains('on') ? 'Light Mode aktiv' : 'Dark Mode aktiv');
+}
+function showTut() { document.getElementById('instm').classList.remove('show'); document.getElementById('tutm').classList.add('show'); }
+function dimiss() { document.getElementById('instm').classList.remove('show'); document.getElementById('tutm').classList.remove('show'); localStorage.setItem('lc_id','1'); }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
+
+['apim','mdm','instm','tutm'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if(e.target === this) { id === 'apim' ? hideApi() : id === 'mdm' ? hideModel() : dimiss(); }
+  });
+});
 </script>
 </body>
 </html>
